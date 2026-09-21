@@ -39,6 +39,8 @@ notebooks = [
   "jupyterlab>=4.3,<5",
   "matplotlib>=3.9,<4",
   "mlflow>=2.17,<4",
+  "nbclient>=0.10,<1",
+  "nbformat>=5.10,<6",
 ]
 ui = [
   "mlflow>=2.17,<4",

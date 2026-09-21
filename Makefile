@@ -24,8 +24,7 @@ notebooks:
 	$(PYTHON) -m jupyterlab notebooks
 
 notebooks-check:
-	mkdir -p /tmp/mlops-notebook-runs
-	$(PYTHON) -m nbconvert --to notebook --execute --ExecutePreprocessor.timeout=180 --output-dir /tmp/mlops-notebook-runs notebooks/*.ipynb
+	$(PYTHON) scripts/check_notebooks.py
 
 monitor:
 	$(PYTHON) -m mlops_demo.monitor
