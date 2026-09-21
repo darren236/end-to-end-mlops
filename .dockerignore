@@ -1,0 +1,12 @@
+.git
+.github
+.pytest_cache
+.ruff_cache
+.venv
+artifacts
+coverage.xml
+htmlcov
+logs
+mlruns
+tests
+

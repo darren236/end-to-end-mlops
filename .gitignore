@@ -1,0 +1,20 @@
+.DS_Store
+.env
+.idea/
+.pytest_cache/
+.ruff_cache/
+.venv/
+.vscode/
+__pycache__/
+*.egg-info/
+*.py[cod]
+.coverage
+build/
+coverage.xml
+dist/
+htmlcov/
+
+# Generated MLOps artifacts
+artifacts/
+logs/
+mlruns/
