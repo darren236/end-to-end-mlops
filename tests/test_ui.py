@@ -40,4 +40,4 @@ def test_guided_ui_walkthrough(
     app.sidebar.radio[0].set_value(STAGES[4]).run()
     app.button[0].click().run()
     assert not app.exception
-    assert any("Drift detected" in message.value for message in app.error)
+    assert any("Expected monitoring alert triggered" in message.value for message in app.warning)

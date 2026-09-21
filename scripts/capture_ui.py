@@ -47,9 +47,13 @@ def main() -> None:
         _screenshot(page, args.output / "ui-prediction.png")
 
         page.get_by_text("5 · Check drift", exact=True).click()
-        page.get_by_role("button", name="Run simulated drift check").click()
-        page.get_by_text("Drift detected", exact=False).wait_for()
-        _screenshot(page, args.output / "ui-drift.png")
+        page.get_by_role("button", name="Simulate drift alert").click()
+        alert = page.get_by_text("Expected monitoring alert triggered", exact=False)
+        alert.wait_for()
+        alert.evaluate("element => element.scrollIntoView({block: 'center'})")
+        page.evaluate("window.scrollBy(0, -100)")
+        page.wait_for_timeout(500)
+        page.screenshot(path=args.output / "ui-drift.png", full_page=False)
         browser.close()
 
 

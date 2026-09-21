@@ -362,9 +362,14 @@ def _try_prediction(bundle: ModelBundle | None) -> None:
         st.caption("This prediction was appended to the local monitoring log used in step 5.")
 
 
-def _render_drift_report(report: dict[str, object]) -> None:
+def _render_drift_report(report: dict[str, object], *, simulated: bool = False) -> None:
     if report["drift_detected"]:
-        st.error("Drift detected: at least one live feature crossed the configured threshold.")
+        prefix = (
+            "Expected monitoring alert triggered" if simulated else "Monitoring alert triggered"
+        )
+        st.warning(
+            f"{prefix}: at least one feature exceeded the configured drift threshold."
+        )
     else:
         st.success("No drift detected for this traffic window.")
     drift_frame = pd.DataFrame(report["features"]).T.reset_index(names="feature")
@@ -391,7 +396,7 @@ def _check_drift(bundle: ModelBundle | None) -> None:
         sample_count = st.slider("Traffic window size", 10, 200, 50, 10)
         shift = st.slider("Injected mean shift (standard deviations)", 0.0, 2.5, 1.5, 0.1)
         threshold = st.slider("Alert threshold (standard deviations)", 0.5, 2.5, 1.0, 0.1)
-        if st.button("Run simulated drift check", type="primary", width="stretch"):
+        if st.button("Simulate drift alert", type="primary", width="stretch"):
             records = simulate_prediction_records(bundle, sample_count, shift)
             st.session_state["drift_report"] = calculate_drift(
                 bundle,
@@ -414,7 +419,7 @@ def _check_drift(bundle: ModelBundle | None) -> None:
     report = st.session_state.get("drift_report")
     if report:
         st.divider()
-        _render_drift_report(report)
+        _render_drift_report(report, simulated=source == "Simulated traffic")
 
     with st.expander("What would change in production?"):
         st.markdown(
