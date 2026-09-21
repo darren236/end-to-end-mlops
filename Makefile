@@ -1,6 +1,6 @@
 PYTHON ?= python3
 
-.PHONY: install train test lint serve ui monitor docker-build clean
+.PHONY: install train test lint serve ui notebooks notebooks-check monitor docker-build clean
 
 install:
 	$(PYTHON) -m pip install -e ".[dev]"
@@ -19,6 +19,13 @@ serve:
 
 ui:
 	streamlit run src/mlops_demo/ui.py --server.address 0.0.0.0 --server.port 8501
+
+notebooks:
+	$(PYTHON) -m jupyterlab notebooks
+
+notebooks-check:
+	mkdir -p /tmp/mlops-notebook-runs
+	$(PYTHON) -m nbconvert --to notebook --execute --ExecutePreprocessor.timeout=180 --output-dir /tmp/mlops-notebook-runs notebooks/*.ipynb
 
 monitor:
 	$(PYTHON) -m mlops_demo.monitor

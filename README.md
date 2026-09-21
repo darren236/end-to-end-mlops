@@ -81,6 +81,23 @@ Example response:
 }
 ```
 
+## Reproducible notebooks
+
+The notebooks are narrative companions to the production code. They import the package directly rather than maintaining a second implementation:
+
+1. [`01_data_validation.ipynb`](notebooks/01_data_validation.ipynb) — inspect the dataset, verify its contract, and visualize feature separation.
+2. [`02_training_and_evaluation.ipynb`](notebooks/02_training_and_evaluation.ipynb) — run tracked training, inspect evaluation evidence, and exercise the quality gate.
+3. [`03_prediction_and_drift.ipynb`](notebooks/03_prediction_and_drift.ipynb) — make a prediction, build its monitoring event, and compare healthy with shifted traffic.
+
+Launch JupyterLab from the repository root:
+
+```bash
+python -m pip install -e ".[notebooks]"
+make notebooks
+```
+
+Each notebook is executable from top to bottom and is also rerun in CI with `make notebooks-check`.
+
 ## Guided user interface
 
 Run the interactive walkthrough:
@@ -175,6 +192,7 @@ The capture script uses the installed Chrome channel by default; pass `--browser
 ├── .github/workflows/ci.yml  # Continuous integration pipeline
 ├── docs/assets/              # Architecture, GUI screenshots, and walkthrough GIF
 ├── examples/                 # Sample API input
+├── notebooks/                # Executable narrative walkthroughs
 ├── scripts/                  # Reproducible screenshot and GIF generation
 ├── src/mlops_demo/
 │   ├── api.py                # Prediction API and Prometheus metrics
