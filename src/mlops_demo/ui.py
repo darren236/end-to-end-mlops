@@ -40,75 +40,319 @@ FEATURE_DEFAULTS = {
 
 APP_STYLES = """
 <style>
+    :root {
+        --surface-0: #080a09;
+        --surface-1: #0d100e;
+        --surface-2: #121612;
+        --surface-3: #171c18;
+        --line: #303630;
+        --line-strong: #475047;
+        --text: #f4f7f4;
+        --muted: #a4aca5;
+        --green: #76b900;
+        --green-bright: #8fd600;
+        --green-soft: rgba(118, 185, 0, 0.13);
+    }
+    html, body, [class*="css"] {
+        font-feature-settings: "ss01" 1, "cv02" 1;
+    }
     .block-container {
-        max-width: 1180px;
-        padding-top: 2rem;
-        padding-bottom: 4rem;
+        max-width: 1200px;
+        padding-top: 2.35rem;
+        padding-bottom: 5rem;
     }
     [data-testid="stAppViewContainer"] {
         background:
-            radial-gradient(circle at 85% 5%, rgba(79, 70, 229, 0.08), transparent 24rem),
-            linear-gradient(180deg, #fbfcff 0%, #ffffff 35%);
+            radial-gradient(circle at 10% -5%, rgba(118, 185, 0, 0.13), transparent 31rem),
+            radial-gradient(circle at 92% 8%, rgba(48, 78, 52, 0.16), transparent 26rem),
+            linear-gradient(rgba(118, 185, 0, 0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(118, 185, 0, 0.025) 1px, transparent 1px),
+            var(--surface-0);
+        background-size: auto, auto, 48px 48px, 48px 48px, auto;
     }
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #f5f7ff 0%, #eef1f8 100%);
-        border-right: 1px solid #dfe3ef;
+        background:
+            linear-gradient(180deg, rgba(118, 185, 0, 0.055), transparent 13rem),
+            #0b0e0c;
+        border-right: 1px solid #2a302b;
+    }
+    [data-testid="stSidebarContent"] {
+        padding-top: 1.4rem;
+    }
+    [data-testid="stHeader"] {
+        background: transparent;
+    }
+    [data-testid="stToolbar"],
+    [data-testid="stDecoration"],
+    [data-testid="stStatusWidget"] {
+        display: none;
+    }
+    h1, h2, h3 {
+        color: var(--text);
+        letter-spacing: -0.025em;
+    }
+    h2 {
+        font-size: 2rem !important;
+        margin-top: 0.25rem !important;
+    }
+    h3 {
+        font-size: 1.25rem !important;
+    }
+    p, label, [data-testid="stCaptionContainer"] {
+        color: #c5cbc6;
+    }
+    a {
+        color: var(--green-bright) !important;
+        text-decoration-color: rgba(143, 214, 0, 0.45) !important;
+    }
+    hr {
+        border-color: #292f2a !important;
     }
     [data-testid="stMetric"] {
-        background: rgba(255, 255, 255, 0.94);
-        border: 1px solid #e1e5ef;
-        border-radius: 14px;
-        padding: 1rem 1.1rem;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
-    }
-    [data-testid="stDataFrame"], [data-testid="stTable"] {
-        border: 1px solid #e1e5ef;
-        border-radius: 12px;
+        position: relative;
+        background: linear-gradient(145deg, #121612 0%, #0e110f 100%);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 1rem 1.15rem 1.1rem;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
         overflow: hidden;
     }
+    [data-testid="stMetric"]::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--green);
+    }
+    [data-testid="stMetricLabel"] {
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.69rem;
+        font-weight: 700;
+    }
+    [data-testid="stMetricValue"] {
+        color: var(--text);
+    }
+    [data-testid="stDataFrame"], [data-testid="stTable"] {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    [data-testid="stVegaLiteChart"] {
+        background: rgba(15, 18, 16, 0.78);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 0.35rem;
+    }
+    [data-testid="stExpander"] {
+        background: rgba(15, 18, 16, 0.82);
+        border: 1px solid var(--line) !important;
+        border-radius: 6px !important;
+    }
+    [data-testid="stAlert"] {
+        border-radius: 4px;
+        border-width: 1px;
+    }
+    [data-baseweb="slider"] [role="slider"] {
+        box-shadow: 0 0 0 2px #080a09, 0 0 0 3px var(--green);
+    }
+    [data-baseweb="input"] > div,
+    [data-baseweb="select"] > div {
+        background: #0d100e;
+        border-color: var(--line);
+    }
     .stButton > button {
-        border-radius: 10px;
+        border: 1px solid var(--green);
+        border-radius: 4px;
+        color: var(--text);
+        font-weight: 700;
+        min-height: 2.9rem;
+        letter-spacing: 0.01em;
+        transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+    }
+    .stButton > button:hover {
+        border-color: var(--green-bright);
+        color: var(--green-bright);
+    }
+    .stButton > button[kind="primary"] {
+        background: var(--green);
+        color: #080a09;
+    }
+    .stButton > button[kind="primary"]:hover {
+        background: var(--green-bright);
+        border-color: var(--green-bright);
+        color: #080a09;
+    }
+    [data-testid="stCodeBlock"] {
+        border: 1px solid var(--line);
+        border-radius: 5px;
+    }
+    [data-testid="stSidebar"] [role="radiogroup"] label {
+        border-left: 2px solid transparent;
+        margin: 0.08rem 0;
+        padding: 0.34rem 0.45rem;
+    }
+    [data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) {
+        background: var(--green-soft);
+        border-left-color: var(--green);
+        color: var(--text);
+    }
+    .mlops-side-brand {
+        align-items: center;
+        display: flex;
+        gap: 0.65rem;
+        margin: 0.25rem 0 1.9rem;
+    }
+    .mlops-side-mark {
+        align-items: center;
+        background: var(--green);
+        color: #080a09;
+        display: inline-flex;
+        font-size: 0.7rem;
+        font-weight: 900;
+        height: 1.8rem;
+        justify-content: center;
+        letter-spacing: -0.05em;
+        width: 1.8rem;
+    }
+    .mlops-side-name {
+        color: var(--text);
+        font-size: 0.9rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+    }
+    .mlops-side-kicker {
+        color: #778079;
+        font-size: 0.62rem;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+    }
+    .mlops-status {
+        background: #0f150e;
+        border: 1px solid #34452c;
+        border-left: 3px solid var(--green);
+        border-radius: 4px;
+        margin: 1.15rem 0 0.75rem;
+        padding: 0.85rem 0.9rem;
+    }
+    .mlops-status-label {
+        color: var(--green-bright);
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+    }
+    .mlops-status-value {
+        color: var(--text);
+        font-size: 0.9rem;
         font-weight: 650;
-        min-height: 2.8rem;
+        margin-top: 0.25rem;
     }
     .mlops-hero {
+        position: relative;
+        overflow: hidden;
         color: white;
-        padding: 2rem 2.2rem;
-        margin: 0 0 1.6rem 0;
-        border-radius: 20px;
+        padding: 2.25rem 2.45rem 2.35rem;
+        margin: 0 0 2.15rem 0;
+        border: 1px solid #3a423b;
+        border-radius: 8px;
         background:
-            radial-gradient(circle at 88% 20%, rgba(56, 189, 248, 0.35), transparent 14rem),
-            linear-gradient(125deg, #111827 0%, #312e81 55%, #4f46e5 100%);
-        box-shadow: 0 18px 44px rgba(49, 46, 129, 0.22);
+            linear-gradient(110deg, rgba(118, 185, 0, 0.08), transparent 46%),
+            radial-gradient(circle at 91% 18%, rgba(118, 185, 0, 0.17), transparent 12rem),
+            #0c0f0d;
+        box-shadow: 0 20px 54px rgba(0, 0, 0, 0.32);
+    }
+    .mlops-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 3px;
+        background: linear-gradient(
+            90deg, var(--green) 0%, var(--green-bright) 38%, transparent 78%
+        );
+    }
+    .mlops-hero::after {
+        content: "";
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        right: -75px;
+        top: -120px;
+        border: 1px solid rgba(118, 185, 0, 0.18);
+        transform: rotate(24deg);
+        box-shadow: 0 0 0 32px rgba(118, 185, 0, 0.025), 0 0 0 68px rgba(118, 185, 0, 0.018);
+        pointer-events: none;
+    }
+    .mlops-hero-meta {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        z-index: 1;
     }
     .mlops-eyebrow {
-        color: #c7d2fe;
-        font-size: 0.75rem;
-        font-weight: 750;
-        letter-spacing: 0.14em;
+        color: var(--green-bright);
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
         text-transform: uppercase;
+    }
+    .mlops-live {
+        align-items: center;
+        color: #aeb6af;
+        display: flex;
+        font-size: 0.68rem;
+        font-weight: 700;
+        gap: 0.45rem;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+    }
+    .mlops-live-dot {
+        background: var(--green-bright);
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px rgba(118, 185, 0, 0.12);
+        height: 0.42rem;
+        width: 0.42rem;
     }
     .mlops-hero h1 {
         color: white;
-        font-size: clamp(2rem, 4vw, 3.15rem);
-        line-height: 1.06;
-        letter-spacing: -0.04em;
-        margin: 0.6rem 0 0.7rem 0;
+        font-size: clamp(2.2rem, 4vw, 3.25rem);
+        line-height: 1.02;
+        letter-spacing: -0.045em;
+        margin: 1.45rem 0 0.8rem;
+        max-width: 800px;
+        position: relative;
+        z-index: 1;
     }
     .mlops-hero p {
-        color: #e0e7ff;
-        font-size: 1.03rem;
-        max-width: 760px;
-        margin-bottom: 1.15rem;
+        color: #c0c7c1;
+        font-size: 1rem;
+        line-height: 1.65;
+        max-width: 775px;
+        margin-bottom: 1.4rem;
+        position: relative;
+        z-index: 1;
     }
-    .mlops-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .mlops-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        position: relative;
+        z-index: 1;
+    }
     .mlops-pill {
-        background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 999px;
-        color: #f8fafc;
-        font-size: 0.78rem;
-        padding: 0.35rem 0.7rem;
+        background: #111512;
+        border: 1px solid #3b443c;
+        border-radius: 3px;
+        color: #dce1dc;
+        font-size: 0.68rem;
+        font-weight: 650;
+        letter-spacing: 0.05em;
+        padding: 0.37rem 0.67rem;
+        text-transform: uppercase;
     }
 </style>
 """
@@ -135,7 +379,10 @@ def _header() -> None:
     st.markdown(
         """
         <div class="mlops-hero">
-          <div class="mlops-eyebrow">Interactive reference project</div>
+          <div class="mlops-hero-meta">
+            <div class="mlops-eyebrow">Interactive reference project</div>
+            <div class="mlops-live"><span class="mlops-live-dot"></span>Pipeline online</div>
+          </div>
           <h1>From data to a monitored prediction</h1>
           <p>Walk through a complete, inspectable ML lifecycle—from validation and tracked
           training to an approved prediction and an observable drift result.</p>
@@ -153,13 +400,38 @@ def _header() -> None:
 
 
 def _sidebar(bundle: ModelBundle | None) -> str:
-    st.sidebar.title("MLOps pipeline")
-    stage = st.sidebar.radio("Pipeline stage", STAGES, key="pipeline_stage")
+    st.sidebar.markdown(
+        """
+        <div class="mlops-side-brand">
+          <span class="mlops-side-mark">ML</span>
+          <div>
+            <div class="mlops-side-name">PIPELINE LAB</div>
+            <div class="mlops-side-kicker">End-to-end MLOps</div>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.sidebar.subheader("Pipeline stages")
+    stage = st.sidebar.radio(
+        "Pipeline stage",
+        STAGES,
+        key="pipeline_stage",
+        label_visibility="collapsed",
+    )
     current_step = STAGES.index(stage) + 1
     st.sidebar.progress(current_step / len(STAGES), text=f"Step {current_step} of {len(STAGES)}")
     st.sidebar.divider()
     if bundle:
-        st.sidebar.success(f"Approved model: v{bundle.model_version}")
+        st.sidebar.markdown(
+            f"""
+            <div class="mlops-status">
+              <div class="mlops-status-label">● Approved model</div>
+              <div class="mlops-status-value">Version {bundle.model_version}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         st.sidebar.caption(f"Run `{bundle.run_id[:8]}` · accuracy {bundle.metrics['accuracy']:.1%}")
     else:
         st.sidebar.warning("No approved model yet")
@@ -196,7 +468,7 @@ def _explore_data() -> None:
     with balance_column:
         st.subheader("Class balance")
         counts = frame["species"].value_counts().rename_axis("species").to_frame("samples")
-        st.bar_chart(counts, height=360)
+        st.bar_chart(counts, color="#76B900", height=360)
 
     with st.expander("Inspect sample rows and the enforced schema"):
         st.dataframe(frame.head(12), width="stretch", hide_index=True)
@@ -358,7 +630,7 @@ def _try_prediction(bundle: ModelBundle | None) -> None:
                 "probability": list(result["probabilities"].values()),
             }
         ).set_index("species")
-        st.bar_chart(probability_frame, height=320)
+        st.bar_chart(probability_frame, color="#76B900", height=320)
         st.caption("This prediction was appended to the local monitoring log used in step 5.")
 
 

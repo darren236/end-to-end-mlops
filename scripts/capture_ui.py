@@ -8,7 +8,15 @@ from playwright.sync_api import Page, sync_playwright
 
 def _screenshot(page: Page, path: Path) -> None:
     page.evaluate("window.scrollTo(0, 0)")
-    page.wait_for_timeout(500)
+    page.locator('[data-testid="stSidebar"]').evaluate(
+        """root => {
+            root.scrollTop = 0;
+            root.querySelectorAll('*').forEach(element => { element.scrollTop = 0; });
+        }"""
+    )
+    # Streamlit mounts chart containers before Vega finishes painting them.
+    # A short settle period keeps the committed media free of loading skeletons.
+    page.wait_for_timeout(1_800)
     page.screenshot(path=path, full_page=False)
 
 
@@ -31,6 +39,7 @@ def main() -> None:
         page.get_by_text("From data to a monitored prediction", exact=False).wait_for(
             timeout=30_000
         )
+        page.wait_for_timeout(1_500)
         _screenshot(page, args.output / "ui-overview.png")
 
         page.get_by_text("2 · Train model", exact=True).click()
@@ -51,7 +60,18 @@ def main() -> None:
         alert = page.get_by_text("Expected monitoring alert triggered", exact=False)
         alert.wait_for()
         alert.evaluate("element => element.scrollIntoView({block: 'center'})")
-        page.evaluate("window.scrollBy(0, -100)")
+        page.locator('[data-testid="stMain"]').evaluate(
+            "element => element.scrollBy(0, -64)"
+        )
+        # Keep the application chrome anchored while the main content remains
+        # focused on the alert and its evidence table.
+        page.evaluate("window.scrollTo(0, 0)")
+        page.locator('[data-testid="stSidebar"]').evaluate(
+            """root => {
+                root.scrollTop = 0;
+                root.querySelectorAll('*').forEach(element => { element.scrollTop = 0; });
+            }"""
+        )
         page.wait_for_timeout(500)
         page.screenshot(path=args.output / "ui-drift.png", full_page=False)
         browser.close()
