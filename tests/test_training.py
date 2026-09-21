@@ -14,6 +14,9 @@ def test_training_creates_approved_bundle(
 
     assert summary["quality_gate"] == "passed"
     assert summary["accuracy"] >= 0.90
+    assert 0.0 <= summary["cv_accuracy_mean"] <= 1.0
+    assert len(summary["confusion_matrix"]) == 3
+    assert summary["test_sample_count"] == 30
     assert bundle.metrics["accuracy"] == summary["accuracy"]
     assert bundle.run_id == summary["run_id"]
     assert len(bundle.baseline) == 4
@@ -30,4 +33,3 @@ def test_quality_gate_blocks_weak_release(tmp_path: Path) -> None:
         train_model(config)
 
     assert not (config.artifacts_dir / "model.joblib").exists()
-

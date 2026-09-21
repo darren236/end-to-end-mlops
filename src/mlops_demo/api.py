@@ -1,11 +1,8 @@
 """FastAPI inference service with prediction logging and Prometheus metrics."""
 
-import json
 import os
-import threading
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from datetime import UTC, datetime
 from pathlib import Path
 from time import perf_counter
 
@@ -19,9 +16,9 @@ from prometheus_client import (
 )
 from pydantic import BaseModel, Field
 
+from mlops_demo import __version__
 from mlops_demo.model import ModelBundle, load_bundle
-
-_LOG_LOCK = threading.Lock()
+from mlops_demo.telemetry import append_prediction, build_prediction_record
 
 
 class IrisFeatures(BaseModel):
@@ -37,12 +34,6 @@ class PredictionResponse(BaseModel):
     predicted_class: str
     class_probabilities: dict[str, float]
     model_version: str
-
-
-def _append_prediction(path: Path, record: dict[str, object]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with _LOG_LOCK, path.open("a", encoding="utf-8") as stream:
-        stream.write(json.dumps(record, separators=(",", ":")) + "\n")
 
 
 def create_app(
@@ -84,7 +75,7 @@ def create_app(
 
     application = FastAPI(
         title="Iris MLOps API",
-        version="0.1.0",
+        version=__version__,
         description="A monitored prediction API for the end-to-end MLOps demo.",
         lifespan=lifespan,
     )
@@ -135,16 +126,14 @@ def create_app(
             for name, probability in zip(bundle.target_names, probabilities, strict=True)
         }
         prediction_count.labels(predicted_class).inc()
-        _append_prediction(
+        append_prediction(
             resolved_log_path,
-            {
-                "timestamp": datetime.now(UTC).isoformat(),
-                "features": feature_values,
-                "predicted_class": predicted_class,
-                "class_probabilities": probability_map,
-                "model_version": bundle.model_version,
-                "run_id": bundle.run_id,
-            },
+            build_prediction_record(
+                bundle,
+                feature_values,
+                predicted_class,
+                probability_map,
+            ),
         )
         return PredictionResponse(
             predicted_class=predicted_class,

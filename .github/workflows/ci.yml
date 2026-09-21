@@ -38,3 +38,6 @@ jobs:
 
       - name: Build runtime image
         run: docker build -t mlops-iris-demo:${{ github.sha }} .
+
+      - name: Build guided UI image
+        run: docker build --target ui-runtime -t mlops-iris-ui:${{ github.sha }} .

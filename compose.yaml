@@ -1,0 +1,17 @@
+name: end-to-end-mlops
+
+services:
+  api:
+    build:
+      context: .
+      target: runtime
+    ports:
+      - "8000:8000"
+
+  walkthrough:
+    build:
+      context: .
+      target: ui-runtime
+    ports:
+      - "8501:8501"
+

@@ -1,6 +1,6 @@
 PYTHON ?= python3
 
-.PHONY: install train test lint serve monitor docker-build clean
+.PHONY: install train test lint serve ui monitor docker-build clean
 
 install:
 	$(PYTHON) -m pip install -e ".[dev]"
@@ -17,6 +17,9 @@ lint:
 serve:
 	uvicorn mlops_demo.api:app --host 0.0.0.0 --port 8000 --reload
 
+ui:
+	streamlit run src/mlops_demo/ui.py --server.address 0.0.0.0 --server.port 8501
+
 monitor:
 	$(PYTHON) -m mlops_demo.monitor
 
@@ -26,4 +29,3 @@ docker-build:
 clean:
 	find . -type d -name __pycache__ -prune -exec rm -rf {} +
 	rm -rf .coverage .pytest_cache .ruff_cache artifacts coverage.xml htmlcov logs mlruns
-

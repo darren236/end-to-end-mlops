@@ -9,8 +9,8 @@ from pathlib import Path
 import mlflow
 from mlflow import MlflowClient
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
+from sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -91,11 +91,25 @@ def train_model(config: TrainingConfig) -> dict[str, object]:
         experiment_id=experiment_id,
         run_name=f"logistic-regression-seed-{config.random_state}",
     ) as run:
+        cross_validation = StratifiedKFold(
+            n_splits=5,
+            shuffle=True,
+            random_state=config.random_state,
+        )
+        validation_scores = cross_val_score(
+            pipeline,
+            train_features,
+            train_target,
+            cv=cross_validation,
+            scoring="accuracy",
+        )
         pipeline.fit(train_features, train_target)
         predictions = pipeline.predict(test_features)
         metrics = {
             "accuracy": float(accuracy_score(test_target, predictions)),
             "f1_macro": float(f1_score(test_target, predictions, average="macro")),
+            "cv_accuracy_mean": float(validation_scores.mean()),
+            "cv_accuracy_std": float(validation_scores.std(ddof=0)),
         }
         params = {
             "dataset": "sklearn.datasets.load_iris",
@@ -132,6 +146,9 @@ def train_model(config: TrainingConfig) -> dict[str, object]:
 
         summary: dict[str, object] = {
             **metrics,
+            "confusion_matrix": confusion_matrix(test_target, predictions).tolist(),
+            "class_names": list(dataset.target_names),
+            "test_sample_count": len(test_target),
             "quality_gate": "passed",
             "model_path": str(model_path),
             "model_version": __version__,

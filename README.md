@@ -17,6 +17,7 @@ A compact reference project that takes a machine-learning model from reproducibl
 | Experiment tracking | Local MLflow runs with parameters, metrics, and model artifacts |
 | Model quality gate | Training fails when held-out accuracy is below the threshold |
 | Packaging and serving | Serializable model bundle exposed through FastAPI |
+| Guided interface | Streamlit walkthrough from dataset to prediction and drift result |
 | Observability | Prometheus request metrics and structured prediction logs |
 | Drift detection | Feature-mean shift compared with the training baseline |
 | Delivery | Tests, linting, model training, and Docker build in GitHub Actions |
@@ -30,8 +31,10 @@ flowchart LR
     D -->|pass| F[Versioned model bundle]
     D -->|fail| G[Stop release]
     F --> H[FastAPI service]
+    F --> L[Guided Streamlit UI]
     H --> I[Prometheus metrics]
     H --> J[Prediction log]
+    L --> J
     J --> K[Drift report]
 ```
 
@@ -69,9 +72,27 @@ Example response:
     "versicolor": 0.02,
     "virginica": 0.0
   },
-  "model_version": "0.1.0"
+  "model_version": "0.2.0"
 }
 ```
+
+## Guided user interface
+
+Run the interactive walkthrough:
+
+```bash
+make ui
+```
+
+Open [http://localhost:8501](http://localhost:8501) and move through five stages:
+
+1. Explore the validated dataset and class balance.
+2. Configure and run a tracked training pipeline.
+3. Review cross-validation, held-out metrics, and the confusion matrix.
+4. Adjust measurements and inspect the model's probability distribution.
+5. Simulate feature drift or analyze predictions made in the interface.
+
+The interface is educational and uses the same model bundle, monitoring calculation, and prediction-event schema as the API.
 
 ## Inspect experiments
 
@@ -108,6 +129,14 @@ docker build -t mlops-iris-demo .
 docker run --rm -p 8000:8000 mlops-iris-demo
 ```
 
+Or start both the API and guided interface:
+
+```bash
+docker compose up --build
+```
+
+The API is available on port `8000` and the walkthrough on port `8501`.
+
 ## Repository layout
 
 ```text
@@ -119,9 +148,13 @@ docker run --rm -p 8000:8000 mlops-iris-demo
 │   ├── data.py               # Data loading and validation
 │   ├── model.py              # Portable model bundle
 │   ├── monitor.py            # Drift calculation and report CLI
-│   └── train.py              # Training, evaluation, gate, and MLflow logging
+│   ├── train.py              # Training, evaluation, gate, and MLflow logging
+│   ├── telemetry.py          # Shared prediction-event persistence
+│   ├── ui.py                 # Five-stage Streamlit walkthrough
+│   └── ui_support.py         # Testable interface calculations
 ├── tests/                    # Unit and integration tests
-├── Dockerfile                # Training and runtime image stages
+├── compose.yaml              # API and interface services
+├── Dockerfile                # Training, API, and interface image stages
 ├── Makefile                  # Common developer commands
 └── pyproject.toml            # Package and tool configuration
 ```
