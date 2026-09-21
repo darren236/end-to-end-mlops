@@ -38,6 +38,81 @@ FEATURE_DEFAULTS = {
     "petal_width_cm": 0.2,
 }
 
+APP_STYLES = """
+<style>
+    .block-container {
+        max-width: 1180px;
+        padding-top: 2rem;
+        padding-bottom: 4rem;
+    }
+    [data-testid="stAppViewContainer"] {
+        background:
+            radial-gradient(circle at 85% 5%, rgba(79, 70, 229, 0.08), transparent 24rem),
+            linear-gradient(180deg, #fbfcff 0%, #ffffff 35%);
+    }
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #f5f7ff 0%, #eef1f8 100%);
+        border-right: 1px solid #dfe3ef;
+    }
+    [data-testid="stMetric"] {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid #e1e5ef;
+        border-radius: 14px;
+        padding: 1rem 1.1rem;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    }
+    [data-testid="stDataFrame"], [data-testid="stTable"] {
+        border: 1px solid #e1e5ef;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .stButton > button {
+        border-radius: 10px;
+        font-weight: 650;
+        min-height: 2.8rem;
+    }
+    .mlops-hero {
+        color: white;
+        padding: 2rem 2.2rem;
+        margin: 0 0 1.6rem 0;
+        border-radius: 20px;
+        background:
+            radial-gradient(circle at 88% 20%, rgba(56, 189, 248, 0.35), transparent 14rem),
+            linear-gradient(125deg, #111827 0%, #312e81 55%, #4f46e5 100%);
+        box-shadow: 0 18px 44px rgba(49, 46, 129, 0.22);
+    }
+    .mlops-eyebrow {
+        color: #c7d2fe;
+        font-size: 0.75rem;
+        font-weight: 750;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+    .mlops-hero h1 {
+        color: white;
+        font-size: clamp(2rem, 4vw, 3.15rem);
+        line-height: 1.06;
+        letter-spacing: -0.04em;
+        margin: 0.6rem 0 0.7rem 0;
+    }
+    .mlops-hero p {
+        color: #e0e7ff;
+        font-size: 1.03rem;
+        max-width: 760px;
+        margin-bottom: 1.15rem;
+    }
+    .mlops-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .mlops-pill {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 999px;
+        color: #f8fafc;
+        font-size: 0.78rem;
+        padding: 0.35rem 0.7rem;
+    }
+</style>
+"""
+
 
 def _model_path() -> Path:
     return Path(os.getenv("MODEL_PATH", "artifacts/model.joblib"))
@@ -57,9 +132,23 @@ def _load_model_if_available() -> ModelBundle | None:
 
 
 def _header() -> None:
-    st.title("From data to a monitored prediction")
-    st.caption(
-        "A guided, hands-on tour of the training, evaluation, serving, and monitoring loop."
+    st.markdown(
+        """
+        <div class="mlops-hero">
+          <div class="mlops-eyebrow">Interactive reference project</div>
+          <h1>From data to a monitored prediction</h1>
+          <p>Walk through a complete, inspectable ML lifecycle—from validation and tracked
+          training to an approved prediction and an observable drift result.</p>
+          <div class="mlops-pills">
+            <span class="mlops-pill">scikit-learn</span>
+            <span class="mlops-pill">MLflow</span>
+            <span class="mlops-pill">FastAPI</span>
+            <span class="mlops-pill">Prometheus</span>
+            <span class="mlops-pill">Docker</span>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
 
@@ -342,6 +431,7 @@ def main() -> None:
         page_icon="🧪",
         layout="wide",
     )
+    st.markdown(APP_STYLES, unsafe_allow_html=True)
     _header()
     bundle = _load_model_if_available()
     stage = _sidebar(bundle)
@@ -359,4 +449,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -21,7 +21,7 @@ def test_guided_ui_walkthrough(
     app = AppTest.from_file(ui_path, default_timeout=30).run()
 
     assert not app.exception
-    assert app.title[0].value == "From data to a monitored prediction"
+    assert any("From data to a monitored prediction" in block.value for block in app.markdown)
     assert len(app.metric) == 3
 
     app.sidebar.radio[0].set_value(STAGES[1]).run()

@@ -8,6 +8,8 @@ A compact reference project that takes a machine-learning model from reproducibl
 
 > This uses the classic Iris dataset so the repository can focus on the lifecycle rather than data acquisition. It is a learning project, not a production model for a consequential decision.
 
+![Animated walkthrough of the five-stage MLOps interface](docs/assets/mlops-walkthrough.gif)
+
 ## What this demonstrates
 
 | Stage | Implementation |
@@ -22,21 +24,7 @@ A compact reference project that takes a machine-learning model from reproducibl
 | Drift detection | Feature-mean shift compared with the training baseline |
 | Delivery | Tests, linting, model training, and Docker build in GitHub Actions |
 
-```mermaid
-flowchart LR
-    A[Iris data] --> B[Validate and split]
-    B --> C[Train pipeline]
-    C --> D{Quality gate}
-    C --> E[MLflow tracking]
-    D -->|pass| F[Versioned model bundle]
-    D -->|fail| G[Stop release]
-    F --> H[FastAPI service]
-    F --> L[Guided Streamlit UI]
-    H --> I[Prometheus metrics]
-    H --> J[Prediction log]
-    L --> J
-    J --> K[Drift report]
-```
+![Architecture diagram showing the validated training, release, serving, and observability loop](docs/assets/mlops-architecture.svg)
 
 ## Quick start
 
@@ -94,6 +82,20 @@ Open [http://localhost:8501](http://localhost:8501) and move through five stages
 
 The interface is educational and uses the same model bundle, monitoring calculation, and prediction-event schema as the API.
 
+### Interface preview
+
+<p align="center">
+  <img src="docs/assets/ui-overview.png" width="49%" alt="Dataset exploration screen with feature and class visualizations">
+  <img src="docs/assets/ui-training.png" width="49%" alt="Configurable tracked training and quality-gate screen">
+</p>
+<p align="center">
+  <img src="docs/assets/ui-evaluation.png" width="49%" alt="Evaluation evidence screen with metrics and confusion matrix">
+  <img src="docs/assets/ui-prediction.png" width="49%" alt="Interactive prediction screen with probability output">
+</p>
+<p align="center">
+  <img src="docs/assets/ui-drift.png" width="72%" alt="Feature-drift simulation and alert screen">
+</p>
+
 ## Inspect experiments
 
 Training writes the MLflow database and tracked artifacts to `./mlruns`, and the approved release artifact to `./artifacts`.
@@ -137,12 +139,26 @@ docker compose up --build
 
 The API is available on port `8000` and the walkthrough on port `8501`.
 
+### Regenerate the repository media
+
+The screenshots are captured from the real running application. With the UI running in one terminal:
+
+```bash
+python -m pip install -e ".[media]"
+python scripts/capture_ui.py
+python scripts/build_walkthrough_gif.py
+```
+
+The capture script uses the installed Chrome channel by default; pass `--browser-channel` to select another Playwright-supported Chromium channel.
+
 ## Repository layout
 
 ```text
 .
 ├── .github/workflows/ci.yml  # Continuous integration pipeline
+├── docs/assets/              # Architecture, GUI screenshots, and walkthrough GIF
 ├── examples/                 # Sample API input
+├── scripts/                  # Reproducible screenshot and GIF generation
 ├── src/mlops_demo/
 │   ├── api.py                # Prediction API and Prometheus metrics
 │   ├── data.py               # Data loading and validation
