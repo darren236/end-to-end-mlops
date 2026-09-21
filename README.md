@@ -210,6 +210,14 @@ The run and its metrics are still recorded in MLflow, but no release artifact is
 - Send prediction logs and Prometheus metrics to managed observability backends.
 - Add authentication, rate limiting, canary releases, and automated rollback criteria.
 
+## AI-assisted development
+
+This repository was developed with assistance from OpenAI Codex. The assistant contributed to code scaffolding and refinement, test creation, documentation, interface styling, and repository visuals.
+
+AI-assisted changes were validated with automated tests, linting, continuous integration, container builds, and visual review of the running interface. The repository maintainer remains responsible for the design decisions, published code, and ongoing maintenance.
+
+This disclosure concerns the development process only. The running application does not call a large language model or require credentials for a generative-AI service.
+
 ## License
 
 [MIT](LICENSE)
