@@ -26,6 +26,23 @@ A compact reference project that takes a machine-learning model from reproducibl
 
 ![Architecture diagram showing the validated training, release, serving, and observability loop](docs/assets/mlops-architecture.svg)
 
+## Compute requirements
+
+This demo is CPU-only. It trains a small logistic-regression model on 150 Iris samples, so no GPU, CUDA installation, or external training service is required.
+
+| Setup | CPU | Memory | Free storage | Intended use |
+|---|---:|---:|---:|---|
+| Minimum Python environment | 2 logical cores | 4 GB RAM | 2 GB | Train, test, run the API, or use the guided interface |
+| Recommended development environment | 4 logical cores | 8 GB RAM | 4 GB | Run MLflow, tests, the API, and the interface comfortably |
+| Full Docker workflow | 4 logical cores | 8 GB RAM | 6 GB | Build both images and run the API and interface together |
+
+Additional runtime requirements:
+
+- Python 3.11–3.13 for a local installation, or Docker with Compose v2.
+- Network access during the initial dependency installation or container build.
+- Ports `8000` for the API and `8501` for the interface; port `5000` is optional for the MLflow UI.
+- The checked-in workflow is suitable for a laptop or standard CI runner. These figures are development recommendations, not production capacity estimates.
+
 ## Quick start
 
 Python 3.11–3.13 is supported.
